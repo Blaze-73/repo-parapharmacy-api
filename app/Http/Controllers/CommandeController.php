@@ -27,6 +27,28 @@ class CommandeController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+         $user = $request->user();
+
+    // Block if user placed more than 3 orders today
+    $ordersToday = Commande::where('user_id', $user->id)
+        ->whereDate('created_at', today())
+        ->count();
+
+    if ($ordersToday >= 3) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Vous avez atteint la limite de commandes pour aujourd\'hui.',
+        ], 429);
+    }
+
+    // Block if any single item quantity exceeds 10
+    foreach ($request->items as $item) {
+        if ($item['quantite'] > 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Quantité maximale de 10 par produit.',
+            ], 422);
+        }}
         $request->validate([
             'items'             => 'required|array|min:1',
             'items.*.produit_id'=> 'required|exists:produits,id',

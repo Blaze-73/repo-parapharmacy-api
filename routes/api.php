@@ -7,8 +7,10 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth public ──────────────────────────────────────────────────────────────
-Route::post('/inscription',  [AuthController::class, 'register']);
-Route::post('/connexion',    [AuthController::class, 'login']);
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/inscription', [AuthController::class, 'register']);
+    Route::post('/connexion',   [AuthController::class, 'login']);
+});
 
 // ── Produits public ───────────────────────────────────────────────────────────
 Route::get('/produits',          [ProduitController::class, 'index']);
