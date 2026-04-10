@@ -18,4 +18,5 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git push --force https://${HF_TOKEN}@huggingface.co/spaces/blaze-73/parapharmacy-api main
+          # We provide the username blaze-73 AND the token to prevent the password prompt
+          git push --force https://blaze-73:${HF_TOKEN}@huggingface.co/spaces/blaze-73/parapharmacy-api main
