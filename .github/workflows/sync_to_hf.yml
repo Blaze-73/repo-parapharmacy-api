@@ -1,24 +1,21 @@
 name: Sync to Hugging Face
 on:
   push:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Push to HF
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-                run: |
-          # Configure Git to not ask for passwords interactively
+        run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          
-          # Push directly to the URL using the token as the password
-          # This is the most stable way to bypass the "Password" prompt
           git push --force https://${HF_TOKEN}@huggingface.co/spaces/blaze-73/parapharmacy-api main
-
